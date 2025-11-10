@@ -1,0 +1,50 @@
+AUTOMATA
+- El ingreso de datos se hace desde el tablero, hay que ver si hacemos q usen
+  flechas o teclas WASD
+- Al iniciar el juego, dependiendo el ingreso, el automata lee el recorrido hacia ARRIBA,
+  ABAJO, IZQUIERDA o DERECHA. Si no se ingresan datos nuevos, se repetira el ingreso
+  anterior hasta que el usuario marque una nueva dirección. Puede ser que el automata
+  esté mal indicado, hay que chusmearlo.
+- El tema de las direcciones creo que se puede tratar con un while y switch. Creo que usaria
+  una función recursiva.
+  mientras (choco == falso  o  cambio == falso) {
+    switch (direc) {
+      case A:
+        move(A);
+        if (posicion == pared) {
+          choco == verdadero;
+        }
+        //lectura opcional (sobre variable direc) + cambio = true;
+        break;
+      case S:
+        move(S);
+        if (posicion == pared) {
+          choco == verdadero;
+        }
+        //lectura opcional (sobre variable direc) + cambio = true;
+        break;
+      case D:
+        move(D);
+        if (posicion == pared) {
+          choco == verdadero;
+        }
+        //lectura opcional (sobre variable direc) + cambio = true;
+        break;
+      }
+      case W:
+        move(W);
+        if (posicion == pared) {
+          choco == verdadero;
+        }
+        //lectura opcional (sobre variable direc) + cambio = true;
+        break;
+      }
+    }
+  }
+  if (cambio == true) { //despues de posible ingreso por teclado
+    cambioDirec(direc);
+  }
+  if (choco == true) {
+    terminaJuego();
+  }
+- el PY juego.py puede servir de plantilla pero hay que pulirlo
