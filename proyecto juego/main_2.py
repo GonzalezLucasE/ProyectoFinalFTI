@@ -238,26 +238,26 @@ class Game:
         # --- Carga de imágenes ---
         try:
             # CORRECCIÓN DE NOMBRES DE VARIABLE: Usar self.main_screen_bg
-            self.main_screen_bg = pygame.image.load('imagen_amarock.jpg').convert() 
+            self.main_screen_bg = pygame.image.load('proyecto juego/imagen_amarock.jpg').convert() 
             self.main_screen_bg = pygame.transform.scale(self.main_screen_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
             
             # Imagen para la pantalla de carga (usaremos la Amarok)
-            self.loading_truck_img = pygame.image.load('amarok.png').convert_alpha() 
+            self.loading_truck_img = pygame.image.load('proyecto juego/amarok.png').convert_alpha() 
             self.loading_truck_img = pygame.transform.scale(self.loading_truck_img, (150, 75))
             
             # Assets del juego (Amarok y Caravanas)
-            self.amarok_game_img = pygame.image.load('amarok.png').convert_alpha()
+            self.amarok_game_img = pygame.image.load('proyecto juego/amarok.png').convert_alpha()
             
             # LISTA CASA RODANTES
             self.caravan_imgs = [
-                pygame.image.load('casa1.png').convert_alpha(),
-                pygame.image.load('casa2.png').convert_alpha(),
-                pygame.image.load('casa3.png').convert_alpha(),
+                pygame.image.load('proyecto juego/casa1.png').convert_alpha(),
+                pygame.image.load('proyecto juego/casa2.png').convert_alpha(),
+                pygame.image.load('proyecto juego/casa3.png').convert_alpha(),
             ]
             
         except pygame.error as e:
             print(f"Error CRÍTICO al cargar el archivo de imagen: {e}")
-            print("Verifica que el nombre del archivo y la extensión (por ejemplo, 'casa1.png') son correctos.")
+            print("Verifica que el nombre del archivo y la extensión (por ejemplo, 'proyecto juego/casa1.png') son correctos.")
             pygame.quit()
             sys.exit()
 
