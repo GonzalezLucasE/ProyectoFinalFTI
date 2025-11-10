@@ -4,7 +4,7 @@ import time
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-CELL_SIZE = 40 # Tamaño base para los segmentos del Snake
+CELL_SIZE = 150 # Tamaño base para los segmentos del Snake
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 150, 0)
