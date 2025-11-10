@@ -6,7 +6,7 @@ import random
 # --- Constantes y Colores ---
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-CELL_SIZE = 40 # Tamaño base para los segmentos del Snake
+CELL_SIZE = 60 # Tamaño base para los segmentos del Snake
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 150, 0)
@@ -147,7 +147,7 @@ class Screens:
             pygame.draw.rect(self.screen, BLACK, button_rect_outer, border_radius=radio_esquina)
             pygame.draw.rect(self.screen, GREEN, button_rect_inner, border_radius=radio_esquina)
             
-            
+           
             # Dibujar el texto EN EL CENTRO del rectángulo
             self.screen.blit(start_text, start_rect)
             pygame.display.flip()
@@ -187,22 +187,22 @@ class Screens:
             elapsed_time = time.time() - start_time
             progress = min(elapsed_time / load_time, 1.0) 
 
-            self.screen.fill(LIGHT_GREEN)
-            
+            self.screen.fill(GREEN)
+            #self.background_image = self.load_background('fondo_nuevo.jpg')
             # Dibujar carretera y Amarok
-            pygame.draw.rect(self.screen, LIGHT_GREEN, (0, SCREEN_HEIGHT // 2 - 20, SCREEN_WIDTH, 40))
+            pygame.draw.rect(self.screen, GREEN, (0, SCREEN_HEIGHT // 2 - 20, SCREEN_WIDTH, 40))
             self.screen.blit(self.loading_truck_img, (truck_x, truck_y))
             
             # Dibujar texto
             loading_text = self.font_small.render("CARGANDO....", True, BLACK)
             loading_text_rect = loading_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50))
             self.screen.blit(loading_text, loading_text_rect)
-
+            #self.screen.blit(self.background_image, (0, 0))
             # Dibujar barra de progreso
-            pygame.draw.rect(self.screen, BLACK, bar_outline_rect, 3)
+            pygame.draw.rect(self.screen, BLACK, bar_outline_rect, 5)
             filled_width = int(bar_outline_rect.width * progress)
             filled_rect = pygame.Rect(bar_outline_rect.x, bar_outline_rect.y, filled_width, bar_outline_rect.height)
-            pygame.draw.rect(self.screen, GREEN, filled_rect)
+            pygame.draw.rect(self.screen, BLACK, filled_rect)
 
             pygame.display.flip()
 
@@ -238,26 +238,26 @@ class Game:
         # --- Carga de imágenes ---
         try:
             # CORRECCIÓN DE NOMBRES DE VARIABLE: Usar self.main_screen_bg
-            self.main_screen_bg = pygame.image.load('proyecto juego/imagen_amarock.jpg').convert() 
+            self.main_screen_bg = pygame.image.load('ProyectoFinalFTI\proyecto juego\imagen_amarock.jpg').convert() 
             self.main_screen_bg = pygame.transform.scale(self.main_screen_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
             
             # Imagen para la pantalla de carga (usaremos la Amarok)
-            self.loading_truck_img = pygame.image.load('proyecto juego/amarok.png').convert_alpha() 
-            self.loading_truck_img = pygame.transform.scale(self.loading_truck_img, (150, 75))
+            self.loading_truck_img = pygame.image.load('ProyectoFinalFTI\proyecto juego\\fondo_nuevo.jpg').convert_alpha() 
+            self.loading_truck_img = pygame.transform.scale(self.loading_truck_img, (200, 100))
             
             # Assets del juego (Amarok y Caravanas)
-            self.amarok_game_img = pygame.image.load('proyecto juego/amarok.png').convert_alpha()
+            self.amarok_game_img = pygame.image.load('ProyectoFinalFTI\proyecto juego\\amarok.png').convert_alpha()
             
             # LISTA CASA RODANTES
             self.caravan_imgs = [
-                pygame.image.load('proyecto juego/casa1.png').convert_alpha(),
-                pygame.image.load('proyecto juego/casa2.png').convert_alpha(),
-                pygame.image.load('proyecto juego/casa3.png').convert_alpha(),
+                pygame.image.load('ProyectoFinalFTI\proyecto juego\casa1.png').convert_alpha(),
+                pygame.image.load('ProyectoFinalFTI\proyecto juego\casa2.png').convert_alpha(),
+                pygame.image.load('ProyectoFinalFTI\proyecto juego\casa3.png').convert_alpha(),
             ]
             
         except pygame.error as e:
             print(f"Error CRÍTICO al cargar el archivo de imagen: {e}")
-            print("Verifica que el nombre del archivo y la extensión (por ejemplo, 'proyecto juego/casa1.png') son correctos.")
+            print("Verifica que el nombre del archivo y la extensión (por ejemplo, 'ProyectoFinalFTI\proyecto juego\casa1.png') son correctos.")
             pygame.quit()
             sys.exit()
 
