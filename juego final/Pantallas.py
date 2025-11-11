@@ -4,7 +4,7 @@ import time
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-CELL_SIZE = 150 # Tamaño base para los segmentos del Snake
+CELL_SIZE = 150
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 150, 0)
@@ -12,7 +12,6 @@ LIGHT_GREEN = (144, 238, 144)
 RED = (200, 0, 0)
 
 class Pantallas:
-    # Usaremos main_screen_bg para mayor claridad
     def __init__(self, screen, main_screen_bg, loading_truck_img): 
         self.screen = screen
         self.main_screen_bg = main_screen_bg
@@ -25,22 +24,16 @@ class Pantallas:
         while waiting:
             self.screen.blit(self.main_screen_bg, (0, 0)) # Usa self.main_screen_bg
             
-            # Dibujar el texto de "Press Enter"
             start_text = self.font_medium.render("COMIENZA EL JUEGO ", True, BLACK)
             start_rect = start_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 84))
             self.screen.blit(start_text, start_rect)
-            # Define el radio de las esquinas (puedes ajustar este valor)
-            # 2. Definir el área del botón (ligeramente más grande que el texto)
-            #button_rect = start_rect.inflate(40, 20)  # Expande el rectángulo 40px a los lados, 20px arriba/abajo
             button_rect_inner = start_rect.inflate(40, 20)
             button_rect_outer = button_rect_inner.inflate(4, 4)
             radio_esquina = 10
-            #Spygame.draw.rect(self.screen, GREEN, button_rect, border_radius=radio_esquina)  # Dibuja un rectángulo rojo
             pygame.draw.rect(self.screen, BLACK, button_rect_outer, border_radius=radio_esquina)
             pygame.draw.rect(self.screen, GREEN, button_rect_inner, border_radius=radio_esquina)
             
             
-            # Dibujar el texto EN EL CENTRO del rectángulo
             self.screen.blit(start_text, start_rect)
             pygame.display.flip()
 
@@ -52,17 +45,13 @@ class Pantallas:
                     waiting = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = event.pos
-                    #if button_rect.collidepoint(mouse_pos):
-                        #waiting = False
                     if button_rect_outer.collidepoint(mouse_pos): 
                         waiting = False
        
     
     def loading_screen(self, load_time=2):
-        # ... (La lógica de carga está correcta y no se modifica) ...
         self.screen.fill(LIGHT_GREEN)
         
-        # Posiciones fijas para los elementos de la carga
         bar_outline_rect = pygame.Rect(SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 + 100, 400, 30)
         truck_x = (SCREEN_WIDTH // 2) - (self.loading_truck_img.get_width() // 2)
         truck_y = (SCREEN_HEIGHT // 2) - self.loading_truck_img.get_height() - 30
@@ -81,16 +70,13 @@ class Pantallas:
 
             self.screen.fill(LIGHT_GREEN)
             
-            # Dibujar carretera y Amarok
             pygame.draw.rect(self.screen, LIGHT_GREEN, (0, SCREEN_HEIGHT // 2 - 20, SCREEN_WIDTH, 40))
             self.screen.blit(self.loading_truck_img, (truck_x, truck_y))
             
-            # Dibujar texto
             loading_text = self.font_small.render("CARGANDO....", True, BLACK)
             loading_text_rect = loading_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50))
             self.screen.blit(loading_text, loading_text_rect)
 
-            # Dibujar barra de progreso
             pygame.draw.rect(self.screen, BLACK, bar_outline_rect, 3)
             filled_width = int(bar_outline_rect.width * progress)
             filled_rect = pygame.Rect(bar_outline_rect.x, bar_outline_rect.y, filled_width, bar_outline_rect.height)
@@ -99,7 +85,7 @@ class Pantallas:
             pygame.display.flip()
     
     def game_over_screen(self, score):
-        """Pantalla de game over con puntuación (versión reutilizable)"""
+        """Pantalla de game over con puntuación"""
         waiting = True
         font_large = pygame.font.Font(None, 80)
         font_medium = pygame.font.Font(None, 50)

@@ -10,12 +10,10 @@ class AutomataSnake:
 				return False
 			return pos not in snake_set
 
-		# helpers de dirección
 		dx, dy = direccion
 		right = (-dy, dx)
 		left = (dy, -dx)
 
-		# Intentar mover hacia la comida si está en línea
 		if casilla is not None:
 			fx, fy = casilla
 			hx, hy = cabeza
@@ -29,7 +27,6 @@ class AutomataSnake:
 				if piso != (-dx, -dy) and celda_libre((hx + piso[0], hy + piso[1])):
 					return piso
 
-		# Wall-following local: adelante, derecha, izquierda
 		adelante = (dx, dy)
 		for cand in (adelante, right, left):
 			nx, ny = cabeza[0] + cand[0], cabeza[1] + cand[1]
@@ -39,11 +36,9 @@ class AutomataSnake:
 					continue
 				return cand
 
-		# Si no hay otra opción (muy raro), intentar cualquier celda libre en orden fijo
 		for cand in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
 			nx, ny = cabeza[0] + cand[0], cabeza[1] + cand[1]
 			if celda_libre((nx, ny)) and cand != (-dx, -dy):
 				return cand
 
-		# No hay movimiento seguro -> devolver la dirección actual (caerá en colisión luego)
 		return direccion
