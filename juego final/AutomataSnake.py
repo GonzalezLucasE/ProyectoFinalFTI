@@ -19,7 +19,6 @@ class AutomataSnake:
 			hx, hy = cabeza
 			if fx == hx:
 				piso = (0, 1) if fy > hy else (0, -1)
-				# evitar invertir
 				if piso != (-dx, -dy) and celda_libre((hx + piso[0], hy + piso[1])):
 					return piso
 			if fy == hy:
@@ -31,7 +30,6 @@ class AutomataSnake:
 		for cand in (adelante, right, left):
 			nx, ny = cabeza[0] + cand[0], cabeza[1] + cand[1]
 			if celda_libre((nx, ny)):
-				# evitar invertir
 				if cand == (-dx, -dy):
 					continue
 				return cand

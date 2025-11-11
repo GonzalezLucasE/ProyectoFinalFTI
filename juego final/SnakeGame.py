@@ -21,6 +21,21 @@ LIGHT_GREEN = (144, 238, 144)
 RED = (200, 0, 0)
 DARK_GREEN = (0, 100, 0)
 
+
+class MooreMachine:
+    
+    def __init__(self, initial_state, transitions, outputs):
+        self.state = initial_state
+        self.transitions = transitions
+        self.outputs = outputs
+
+    def input(self, symbol):
+        state_trans = self.transitions.get(self.state, {})
+        self.state = state_trans.get(symbol, self.state)
+        out = self.outputs.get(self.state)
+        if callable(out):
+            out()
+
 class SnakeGame(pygame.sprite.Sprite):
     
     def __init__(self, master, cell_size, amarok_img, caravan_imgs, controller=None, use_controller=False):
@@ -29,8 +44,6 @@ class SnakeGame(pygame.sprite.Sprite):
         self.width = SCREEN_WIDTH
         self.height = SCREEN_HEIGHT
         self.cell_size = cell_size
-        self.amarok_img = pygame.transform.scale(amarok_img, (cell_size * 2, cell_size))
-        self.caravan_imgs = [pygame.transform.scale(img, (cell_size, cell_size)) for img in caravan_imgs]
         self.columns = self.width // self.cell_size
         self.rows = self.height // self.cell_size
 
@@ -89,16 +102,26 @@ class SnakeGame(pygame.sprite.Sprite):
                     pady=10, padx=10)
         self.score_label.pack(side=tk.BOTTOM, fill=tk.X)
 
-        master.bind("<Up>", lambda e: self.change_direction((0, -1)))
-        master.bind("<Down>", lambda e: self.change_direction((0, 1)))
-        master.bind("<Left>", lambda e: self.change_direction((-1, 0)))
-        master.bind("<Right>", lambda e: self.change_direction((1, 0)))
-        master.bind("w", lambda e: self.change_direction((0, -1)))
-        master.bind("s", lambda e: self.change_direction((0, 1)))
-        master.bind("a", lambda e: self.change_direction((-1, 0)))
-        master.bind("d", lambda e: self.change_direction((1, 0)))
-        master.bind("<space>", lambda e: self.restart())
-        master.bind("t", lambda e: self.toggle_controller())
+        transitions = {
+            'IDLE': {'UP': 'UP', 'DOWN': 'DOWN', 'LEFT': 'LEFT', 'RIGHT': 'RIGHT', 'RESTART': 'IDLE', 'TOGGLE': 'IDLE'},
+            'UP':   {'UP': 'UP',   'DOWN': 'UP',   'LEFT': 'LEFT',  'RIGHT': 'RIGHT', 'RESTART': 'UP', 'TOGGLE': 'UP'},
+            'DOWN': {'UP': 'DOWN', 'DOWN': 'DOWN', 'LEFT': 'LEFT',  'RIGHT': 'RIGHT', 'RESTART': 'DOWN', 'TOGGLE': 'DOWN'},
+            'LEFT': {'UP': 'UP',   'DOWN': 'DOWN', 'LEFT': 'LEFT',  'RIGHT': 'LEFT',  'RESTART': 'LEFT', 'TOGGLE': 'LEFT'},
+            'RIGHT':{'UP': 'UP',   'DOWN': 'DOWN', 'LEFT': 'RIGHT', 'RIGHT': 'RIGHT', 'RESTART': 'RIGHT','TOGGLE': 'RIGHT'},
+        }
+        outputs = {
+            'UP': lambda: self.change_direction((0, -1)),
+            'DOWN': lambda: self.change_direction((0, 1)),
+            'LEFT': lambda: self.change_direction((-1, 0)),
+            'RIGHT': lambda: self.change_direction((1, 0)),
+            'IDLE': lambda: None,
+        }
+        try:
+            self.moore = MooreMachine('IDLE', transitions, outputs)
+        except NameError:
+            self.moore = None
+
+        master.bind_all("<Key>", self._on_key)
 
         self.running = False
         self.after_id = None
@@ -132,7 +155,8 @@ class SnakeGame(pygame.sprite.Sprite):
         if self.tk_caravan_imgs:
             self.food_type = random.randrange(len(self.tk_caravan_imgs))
         else:
-            self.food_type = random.randrange(len(self.caravan_imgs)) if self.caravan_imgs else 0
+            self.food_type = 0
+
 
     def change_direction(self, new_dir):
         dx, dy = self.direction
@@ -210,7 +234,7 @@ class SnakeGame(pygame.sprite.Sprite):
                 off_y = (self.cell_size - img.height()) // 2
                 self.canvas.create_image(px + off_x, py + off_y, image=img, anchor='nw', tags=('sprites',))
             else:
-                self.draw_cell(fx, fy, "#FF4444") 
+                self.draw_cell(fx, fy, "#FF4444")
 
         for i, (x, y) in enumerate(self.snake):
             px = x * self.cell_size
@@ -279,3 +303,41 @@ class SnakeGame(pygame.sprite.Sprite):
         self.game_over = False
         self.redraw()
         self.after_id = self.master.after(self.speed, self.step)
+
+    def _on_key(self, event):
+        key = (event.keysym or '').lower()
+        
+        if self.game_over:
+            if key == 'space':
+                self.restart()
+                return
+            elif key == 'escape':
+                self.master.quit()
+                return
+        
+        key_to_symbol = {
+            'up': 'UP', 'w': 'UP',
+            'down': 'DOWN', 's': 'DOWN',
+            'left': 'LEFT', 'a': 'LEFT',
+            'right': 'RIGHT', 'd': 'RIGHT',
+            'space': 'RESTART',
+            't': 'TOGGLE',
+        }
+        symbol = key_to_symbol.get(key)
+        if not symbol:
+            return
+
+        if hasattr(self, 'moore') and self.moore is not None:
+            self.moore.input(symbol)
+        else:
+            fallback = {
+                'UP': lambda: self.change_direction((0, -1)),
+                'DOWN': lambda: self.change_direction((0, 1)),
+                'LEFT': lambda: self.change_direction((-1, 0)),
+                'RIGHT': lambda: self.change_direction((1, 0)),
+                'RESTART': lambda: self.restart(),
+                'TOGGLE': lambda: self.toggle_controller(),
+            }
+            action = fallback.get(symbol)
+            if action:
+                action()
