@@ -1,8 +1,6 @@
-"""
-Launcher que muestra pantallas pygame (inicio/carga) y luego ejecuta
-la lógica original basada en Tkinter (SnakeGame). Mantiene la lógica
-inicial y la estética solicitada.
-"""
+#Launcher que muestra pantallas pygame (inicio/carga) y luego ejecuta
+#la lógica original basada en Tkinter (SnakeGame). Mantiene la lógica
+#inicial y la estética solicitada."""
 
 import os
 import sys

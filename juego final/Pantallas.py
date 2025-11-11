@@ -25,15 +25,13 @@ class Pantallas:
         while waiting:
             self.screen.blit(self.main_screen_bg, (0, 0)) # Usa self.main_screen_bg
             
-            # Dibujar el texto de "Press Enter"
+            # Crea el botón "COMIENZA EL JUEGO"
             start_text = self.font_medium.render("COMIENZA EL JUEGO ", True, BLACK)
-            start_rect = start_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 84))
+            start_rect = start_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 84)) # Define el radio de las esquinas (ajustando los valor)
             self.screen.blit(start_text, start_rect)
-            # Define el radio de las esquinas (puedes ajustar este valor)
-            # 2. Definir el área del botón (ligeramente más grande que el texto)
             #button_rect = start_rect.inflate(40, 20)  # Expande el rectángulo 40px a los lados, 20px arriba/abajo
             button_rect_inner = start_rect.inflate(40, 20)
-            button_rect_outer = button_rect_inner.inflate(4, 4)
+            button_rect_outer = button_rect_inner.inflate(2, 2)
             radio_esquina = 10
             #Spygame.draw.rect(self.screen, GREEN, button_rect, border_radius=radio_esquina)  # Dibuja un rectángulo rojo
             pygame.draw.rect(self.screen, BLACK, button_rect_outer, border_radius=radio_esquina)
