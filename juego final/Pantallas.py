@@ -47,7 +47,6 @@ class Pantallas:
                     mouse_pos = event.pos
                     if button_rect_outer.collidepoint(mouse_pos): 
                         waiting = False
-       
     
     def loading_screen(self, load_time=2):
         self.screen.fill(LIGHT_GREEN)
