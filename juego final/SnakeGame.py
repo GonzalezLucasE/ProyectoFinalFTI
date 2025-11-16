@@ -65,7 +65,7 @@ class SnakeGame(pygame.sprite.Sprite):
             self.bg_image = None
         
         self.tk_head_imgs = {}
-        self.tk_caravan_imgs = []
+        self.tk_caravan_imgs = {}
         try:
             if _PIL_AVAILABLE:
                 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -90,10 +90,22 @@ class SnakeGame(pygame.sprite.Sprite):
                         im = Image.open(p).convert('RGBA')
                         large_size = int(self.cell_size * 1.5)
                         im_resized = im.resize((large_size, large_size), Image.LANCZOS)
-                        self.tk_caravan_imgs.append(ImageTk.PhotoImage(im_resized))
+                        
+                        caravan_dict = {}
+                        caravan_dict['right'] = ImageTk.PhotoImage(im_resized)
+                        
+                        up_img = im_resized.rotate(90, expand=False).resize((large_size, large_size), Image.LANCZOS)
+                        down_img = im_resized.rotate(270, expand=False).resize((large_size, large_size), Image.LANCZOS)
+                        left_img = im_resized.rotate(180, expand=False).resize((large_size, large_size), Image.LANCZOS)
+                        
+                        caravan_dict['up'] = ImageTk.PhotoImage(up_img)
+                        caravan_dict['down'] = ImageTk.PhotoImage(down_img)
+                        caravan_dict['left'] = ImageTk.PhotoImage(left_img)
+                        
+                        self.tk_caravan_imgs[name.replace('.png', '')] = caravan_dict
         except Exception:
             self.tk_head_imgs = {}
-            self.tk_caravan_imgs = []
+            self.tk_caravan_imgs = {}
 
         self.score_var = tk.StringVar()
         self.score_var.set("Puntos: 0")
@@ -132,6 +144,7 @@ class SnakeGame(pygame.sprite.Sprite):
         self.mode_label.pack()
 
         self.caravans_type = []
+        self.caravans_direction = []
         self.reset()
 
     def reset(self):
@@ -144,6 +157,7 @@ class SnakeGame(pygame.sprite.Sprite):
         self.score = 0
         self.speed = 300
         self.game_over = False
+        self.caravans_direction = []
 
     def place_food(self):
         empty_cells = [(x, y) for x in range(self.columns) for y in range(self.rows) if (x, y) not in getattr(self, 'snake', [])]
@@ -153,9 +167,9 @@ class SnakeGame(pygame.sprite.Sprite):
             return
         self.food = random.choice(empty_cells)
         if self.tk_caravan_imgs:
-            self.food_type = random.randrange(len(self.tk_caravan_imgs))
+            self.food_type = random.choice(list(self.tk_caravan_imgs.keys()))
         else:
-            self.food_type = 0
+            self.food_type = 'casa1'
 
 
     def change_direction(self, new_dir):
@@ -201,15 +215,14 @@ class SnakeGame(pygame.sprite.Sprite):
             self.score += 1
             self.score_var.set(f"Puntos: {self.score}")
             if self.speed > 40:
-                self.speed = max(40, int(self.speed * 0.9))
-            if self.tk_caravan_imgs:
-                idx = random.randrange(len(self.tk_caravan_imgs))
-            else:
-                idx = 0
-            self.caravans_type.append(idx)
+                self.speed = max(40, int(self.speed * 0.95))
+            self.caravans_type.append(self.food_type)
+            self.caravans_direction.append(self.direction)
             self.place_food()
         else:
             self.snake.pop()
+            if self.caravans_direction:
+                self.caravans_direction.pop(0)
 
         self.redraw()
         self.after_id = self.master.after(self.speed, self.step)
