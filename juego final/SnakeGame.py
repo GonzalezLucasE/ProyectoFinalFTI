@@ -79,7 +79,7 @@ class SnakeGame(pygame.sprite.Sprite):
                     self.tk_head_imgs['right'] = ImageTk.PhotoImage(h_resized)
 
                     up_img = h_resized.rotate(90, expand=True).resize(base_size, Image.LANCZOS)
-                    left_img = h_resized.rotate(180, expand=True).resize(base_size, Image.LANCZOS)
+                    left_img = h_resized.transpose(Image.FLIP_LEFT_RIGHT).resize(base_size, Image.LANCZOS)
                     down_img = h_resized.rotate(270, expand=True).resize(base_size, Image.LANCZOS)
                     self.tk_head_imgs['up'] = ImageTk.PhotoImage(up_img)
                     self.tk_head_imgs['left'] = ImageTk.PhotoImage(left_img)
@@ -96,7 +96,7 @@ class SnakeGame(pygame.sprite.Sprite):
                         
                         up_img = im_resized.rotate(90, expand=False).resize((large_size, large_size), Image.LANCZOS)
                         down_img = im_resized.rotate(270, expand=False).resize((large_size, large_size), Image.LANCZOS)
-                        left_img = im_resized.rotate(180, expand=False).resize((large_size, large_size), Image.LANCZOS)
+                        left_img = im_resized.transpose(Image.FLIP_LEFT_RIGHT).resize((large_size, large_size), Image.LANCZOS)
                         
                         caravan_dict['up'] = ImageTk.PhotoImage(up_img)
                         caravan_dict['down'] = ImageTk.PhotoImage(down_img)
@@ -242,10 +242,8 @@ class SnakeGame(pygame.sprite.Sprite):
             px = fx * self.cell_size
             py = fy * self.cell_size
             if getattr(self, 'tk_caravan_imgs', None) and self.food_type is not None and len(self.tk_caravan_imgs) > 0:
-                # self.food_type is a key (string) for tk_caravan_imgs; guard and pick a directional image
                 key = self.food_type if self.food_type in self.tk_caravan_imgs else list(self.tk_caravan_imgs.keys())[0]
                 caravan_dict = self.tk_caravan_imgs.get(key, {})
-                # choose a default orientation for food (right) or the first available
                 img = caravan_dict.get('right') if 'right' in caravan_dict else next(iter(caravan_dict.values()))
                 if img:
                     off_x = (self.cell_size - img.width()) // 2
