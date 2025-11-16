@@ -14,6 +14,7 @@ def load_images_from_proyecto():
 
 	try:
 		bg = pygame.image.load(os.path.join(proyecto_juego_dir, 'imagen_amarock.jpg')).convert()
+		loadbg = pygame.image.load(os.path.join(proyecto_juego_dir, 'fondo_carga.png')).convert()
 		amarok = pygame.image.load(os.path.join(proyecto_juego_dir, 'amarok.png')).convert_alpha()
 		casa1 = pygame.image.load(os.path.join(proyecto_juego_dir, 'casa1.png')).convert_alpha()
 		casa2 = pygame.image.load(os.path.join(proyecto_juego_dir, 'casa2.png')).convert_alpha()
@@ -22,36 +23,37 @@ def load_images_from_proyecto():
 		print(f"Error cargando imágenes desde '{proyecto_juego_dir}': {e}")
 		raise
 
-	return bg, amarok, [casa1, casa2, casa3]
+	return bg, loadbg, amarok, [casa1, casa2, casa3]
 
 
 def main():
 	pygame.init()
 	screen = pygame.display.set_mode((800, 600))
-	pygame.display.set_caption('La Mandita Amarok - Pantallas')
+	pygame.display.set_caption('Snake Amarok - Pantallas')
 
 	try:
-		bg, amarok_img, caravan_imgs = load_images_from_proyecto()
+		bg, loadbg, amarok_img, caravan_imgs = load_images_from_proyecto()
 	except Exception:
 		pygame.quit()
 		sys.exit(1)
 
 	bg = pygame.transform.scale(bg, (800, 600))
-	loading_truck = pygame.transform.scale(amarok_img, (150, 75))
+	loadbg = pygame.transform.scale(loadbg, (800, 800))
+	loading_truck = pygame.transform.scale(amarok_img, (300, 250))
 
-	pantallas = Pantallas(screen, bg, loading_truck)
+	pantallas = Pantallas(screen, bg, loadbg, loading_truck)
 	pantallas.main_menu()
 	pantallas.loading_screen(load_time=1.5)
 
 	pygame.quit()
 
 	root = tk.Tk()
-	root.title('La Mandita Amarok - Juego')
+	root.title('Snake Amarok - Juego')
 	root.resizable(False, False)
 
 	pygame.init()
 
-	game = SnakeGame(root, cell_size=40, amarok_img=amarok_img, caravan_imgs=caravan_imgs, controller=None, use_controller=False)
+	game = SnakeGame(root, cell_size=80, amarok_img=amarok_img, caravan_imgs=caravan_imgs, controller=None, use_controller=False)
 
 	root.focus_set()
 	game.canvas.focus_set()

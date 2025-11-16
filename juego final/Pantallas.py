@@ -12,9 +12,10 @@ LIGHT_GREEN = (144, 238, 144)
 RED = (200, 0, 0)
 
 class Pantallas:
-    def __init__(self, screen, main_screen_bg, loading_truck_img): 
+    def __init__(self, screen, main_screen_bg, loading_screen_bg, loading_truck_img): 
         self.screen = screen
         self.main_screen_bg = main_screen_bg
+        self.loading_screen_bg = loading_screen_bg
         self.loading_truck_img = loading_truck_img
         self.font_medium = pygame.font.Font(None, 50)
         self.font_small = pygame.font.Font(None, 36)
@@ -49,7 +50,8 @@ class Pantallas:
                         waiting = False
     
     def loading_screen(self, load_time=2):
-        self.screen.fill(LIGHT_GREEN)
+        # self.screen.fill(LIGHT_GREEN)
+        self.screen.blit(self.loading_screen_bg, (0, 0))
         
         bar_outline_rect = pygame.Rect(SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 + 100, 400, 30)
         truck_x = (SCREEN_WIDTH // 2) - (self.loading_truck_img.get_width() // 2)
@@ -67,10 +69,10 @@ class Pantallas:
             elapsed_time = time.time() - start_time
             progress = min(elapsed_time / load_time, 1.0) 
 
-            self.screen.fill(LIGHT_GREEN)
+            # self.screen.fill(LIGHT_GREEN)
             
-            pygame.draw.rect(self.screen, LIGHT_GREEN, (0, SCREEN_HEIGHT // 2 - 20, SCREEN_WIDTH, 40))
-            self.screen.blit(self.loading_truck_img, (truck_x, truck_y))
+            # pygame.draw.rect(self.screen, LIGHT_GREEN, (0, SCREEN_HEIGHT // 2 - 20, SCREEN_WIDTH, 40))
+            # self.screen.blit(self.loading_truck_img, (truck_x, truck_y))
             
             loading_text = self.font_small.render("CARGANDO....", True, BLACK)
             loading_text_rect = loading_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50))

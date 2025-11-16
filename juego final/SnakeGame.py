@@ -74,7 +74,7 @@ class SnakeGame(pygame.sprite.Sprite):
                 head_path = os.path.join(proyecto_juego_dir, 'amarok.png')
                 if os.path.exists(head_path):
                     h = Image.open(head_path).convert('RGBA')
-                    base_size = (self.cell_size * 2, self.cell_size)
+                    base_size = (self.cell_size, self.cell_size)
                     h_resized = h.resize(base_size, Image.LANCZOS)
                     self.tk_head_imgs['right'] = ImageTk.PhotoImage(h_resized)
 
@@ -242,10 +242,15 @@ class SnakeGame(pygame.sprite.Sprite):
             px = fx * self.cell_size
             py = fy * self.cell_size
             if getattr(self, 'tk_caravan_imgs', None) and self.food_type is not None and len(self.tk_caravan_imgs) > 0:
-                img = self.tk_caravan_imgs[self.food_type % len(self.tk_caravan_imgs)]
-                off_x = (self.cell_size - img.width()) // 2
-                off_y = (self.cell_size - img.height()) // 2
-                self.canvas.create_image(px + off_x, py + off_y, image=img, anchor='nw', tags=('sprites',))
+                # self.food_type is a key (string) for tk_caravan_imgs; guard and pick a directional image
+                key = self.food_type if self.food_type in self.tk_caravan_imgs else list(self.tk_caravan_imgs.keys())[0]
+                caravan_dict = self.tk_caravan_imgs.get(key, {})
+                # choose a default orientation for food (right) or the first available
+                img = caravan_dict.get('right') if 'right' in caravan_dict else next(iter(caravan_dict.values()))
+                if img:
+                    off_x = (self.cell_size - img.width()) // 2
+                    off_y = (self.cell_size - img.height()) // 2
+                    self.canvas.create_image(px + off_x, py + off_y, image=img, anchor='nw', tags=('sprites',))
             else:
                 self.draw_cell(fx, fy, "#FF4444")
 
@@ -272,12 +277,33 @@ class SnakeGame(pygame.sprite.Sprite):
                 else:
                     self.draw_cell(x, y, "#00AA00", width=1.5)
             else:
-                idx = self.caravans_type[i-1] if i-1 < len(self.caravans_type) else 0
-                if getattr(self, 'tk_caravan_imgs', None) and len(self.tk_caravan_imgs) > 0:
-                    img = self.tk_caravan_imgs[idx % len(self.tk_caravan_imgs)]
-                    off_x = (self.cell_size - img.width()) // 2
-                    off_y = (self.cell_size - img.height()) // 2
-                    self.canvas.create_image(px + off_x, py + off_y, image=img, anchor='nw', tags=('sprites',))
+                idx = self.caravans_type[i-1] if i-1 < len(self.caravans_type) else None
+                if getattr(self, 'tk_caravan_imgs', None) and len(self.tk_caravan_imgs) > 0 and idx is not None:
+                    # idx may be a key (string) stored previously. Resolve to a caravan dict.
+                    if isinstance(idx, str) and idx in self.tk_caravan_imgs:
+                        caravan_dict = self.tk_caravan_imgs[idx]
+                    else:
+                        # fallback: pick first caravan dict
+                        caravan_dict = next(iter(self.tk_caravan_imgs.values()))
+
+                    # determine orientation from stored caravan directions when available
+                    dir_key = 'right'
+                    if i-1 < len(self.caravans_direction):
+                        d = self.caravans_direction[i-1]
+                        if d == (1, 0):
+                            dir_key = 'right'
+                        elif d == (-1, 0):
+                            dir_key = 'left'
+                        elif d == (0, -1):
+                            dir_key = 'up'
+                        elif d == (0, 1):
+                            dir_key = 'down'
+
+                    img = caravan_dict.get(dir_key) if dir_key in caravan_dict else next(iter(caravan_dict.values()))
+                    if img:
+                        off_x = (self.cell_size - img.width()) // 2
+                        off_y = (self.cell_size - img.height()) // 2
+                        self.canvas.create_image(px + off_x, py + off_y, image=img, anchor='nw', tags=('sprites',))
                 else:
                     self.draw_cell(x, y, "#00DD00", width=1)
 
