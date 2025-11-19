@@ -1,9 +1,7 @@
 import random
 import pygame
-import sys
 import os
 import tkinter as tk
-import Pantallas
 
 try:
     from PIL import Image, ImageTk
