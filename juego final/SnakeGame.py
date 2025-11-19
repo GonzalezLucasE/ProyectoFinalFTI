@@ -277,14 +277,11 @@ class SnakeGame(pygame.sprite.Sprite):
             else:
                 idx = self.caravans_type[i-1] if i-1 < len(self.caravans_type) else None
                 if getattr(self, 'tk_caravan_imgs', None) and len(self.tk_caravan_imgs) > 0 and idx is not None:
-                    # idx may be a key (string) stored previously. Resolve to a caravan dict.
                     if isinstance(idx, str) and idx in self.tk_caravan_imgs:
                         caravan_dict = self.tk_caravan_imgs[idx]
                     else:
-                        # fallback: pick first caravan dict
                         caravan_dict = next(iter(self.tk_caravan_imgs.values()))
 
-                    # determine orientation from stored caravan directions when available
                     dir_key = 'right'
                     if i-1 < len(self.caravans_direction):
                         d = self.caravans_direction[i-1]
