@@ -29,7 +29,7 @@ def load_images_from_proyecto():
 def main():
 	pygame.init()
 	screen = pygame.display.set_mode((800, 600))
-	pygame.display.set_caption('Snake Amarok - Pantallas')
+	pygame.display.set_caption('Snake Amarok')
 
 	try:
 		bg, loadbg, amarok_img, caravan_imgs = load_images_from_proyecto()
